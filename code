@@ -1,7 +1,8 @@
-echo "# WSL2-SSH" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin https://github.com/archlongbelong/WSL2-SSH.git
-git push -u origin main
+wsl -u root service ssh start
+$wslIP = wsl -- hostname -I
+$wslIP = $wslIP.Trim()
+
+netsh interface portproxy add v4tov4 listenport=22 connectaddress=$wslIP connectport=22
+
+Remove-NetFirewallRule -DisplayName "Allow WSL Inbound Port 22" -ErrorAction SilentlyContinue
+New-NetFirewallRule -DisplayName "Allow WSL Inbound Port 22" -Direction Inbound -Action Allow -Protocol TCP -LocalPort 22
